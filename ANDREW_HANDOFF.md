@@ -47,7 +47,7 @@ Wire RFID + servo + motor all on one XIAO. Flash the full game code. Run the lap
 ### 3. Hand Off to Famin for Soldering
 Famin solders headers onto XIAO + noise cap on motor. See `SOLDER_LIST.md`.
 
-### 4. Meera Assembles Chassis
+### 4. Mira Assembles Chassis
 Mount all electronics on the car. RFID reader goes on the underside facing the track.
 
 ### 5. Night Session — Final Integration
@@ -83,7 +83,7 @@ Everyone meets up. Verify everything works on the actual car on the actual track
 
 - **Mannat** — electronics + code
 - **Famin** — soldering + assembly
-- **Meera** — car chassis
+- **Mira** — car chassis
 - **Andrew** — you're here
 
 ## Questions?
