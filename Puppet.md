@@ -30,7 +30,19 @@
 | # | Instruction | Status | Compliance | Notes |
 |---|-------------|--------|------------|-------|
 | 12 | Take MAX7219 out of bag, show input side pins. | DONE | MATCH | 5 pins: VCC, GND, DIN, CS, CLK (bottom to top). Male pins, needs F-F wires. |
-| 13 | Wire MAX7219 to XIAO. | BLOCKED | — | Can't piggyback multiple wires on unsolderd XIAO pin holes. Deferred to post-solder session. |
+| 13 | Wire MAX7219 to XIAO. | BLOCKED | — | Can't piggyback multiple wires on unsoldered XIAO pin holes. Deferred to post-solder session. |
+
+### Phase 4: Servo Test
+
+| # | Instruction | Status | Compliance | Notes |
+|---|-------------|--------|------------|-------|
+| 18 | Gather parts: SG90 servo, 3 female-to-male wires. | DONE | MATCH | Green, white, black M-to-F wires. No alligator clips available — using dupont wires for all 3 servo connections. |
+| 19 | Connect male ends to servo connector: black↔brown(GND), white↔red(VCC), green↔orange(signal). | DONE | MATCH | User initially said "yellow" but confirmed it's orange. |
+| 20 | Switched to new XIAO (friend lost the original). Rewired servo only with M-to-M wires: green→GND, white→3V3, orange→D2. USB-C plugged in, red LED on. | DONE | MATCH | New XIAO MAC: e8:f6:0a:16:f2:b8. Flashed servo_test.ino. |
+| 21 | Verify servo sweeps. | DONE | MATCH | Servo working but very slow — expected on 3.3V (rated 4.8-6V). Will improve on LiPo. |
+| 22 | Send friend to buy capacitors + missing parts. | DONE | N/A | Sent screenshot of shopping list. |
+| 23 | Flash BLE+servo test, run BLE scan from laptop. | DONE | N/A (automated) | MarioKart-Car found at C2B9CF6E-4D14-4009-CCA9-79AE37FF1596. BLE commands sent: L→C→R→C. |
+| 24 | Verify servo responds to BLE commands. | DONE | MATCH | Servo wiggled on rapid L/R BLE test. User confirmed movement. BLE steering fully working. |
 
 ### Phase 3: Flash & Scan Tags
 
@@ -71,3 +83,4 @@
 | 21 | [21-unknown-board.jpg](assets/photos/21-unknown-board.jpg) | MAX7219 8x8 LED dot matrix in anti-static bag |
 | 22 | [22-max7219-input-pins.jpg](assets/photos/22-max7219-input-pins.jpg) | MAX7219 out of bag, 5 input pins on green header visible |
 | 23 | [23-max7219-labels.jpg](assets/photos/23-max7219-labels.jpg) | MAX7219 pin labels closeup: VCC GND DIN CS CLK |
+| 24 | [24-more-parts.jpg](assets/photos/24-more-parts.jpg) | More parts: SG90 servo, N20 motor, 9V battery, alligator clips, component kit, wire cutters, green controller, more LED matrices |
