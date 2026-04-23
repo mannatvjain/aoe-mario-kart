@@ -8,6 +8,8 @@ When puppeting the user through hardware assembly or setup:
 - Log every instruction and the user's response/compliance in `Puppet.md`
 - Track how closely the user follows instructions (did they do exactly what was asked, skip ahead, deviate, etc.)
 - Format: numbered steps with status (pending/done/skipped/deviated) and notes
+- **Andrew Wu** is new to Claude Code — puppet him more closely, explain more, take the lead on decisions. Don't assume he knows what to do next.
+- Always include physical descriptions of parts when referring to them (color, size, shape, what it looks like)
 
 ## Stack
 - **Language**:
