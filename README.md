@@ -101,4 +101,4 @@ Controls: `W`/`S` = forward/reverse, `A`/`D` = steer, `Space` = stop, `Enter` = 
 
 ## Team
 
-Built by Mannat Jain and Famin Ahmmed for Columbia University's Art of Engineering (Spring 2026).
+Built by Mannat Jain, Famin Ahmmed, Andrew Wu, and Mira Roditi for Columbia University's Art of Engineering (Spring 2026).
