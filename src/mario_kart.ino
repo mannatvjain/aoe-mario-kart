@@ -7,7 +7,10 @@
  *   2. MFRC522     (by GithubCommunity)
  *   3. ArduinoBLE  is NOT used — we use the built-in ESP32 BLE stack
  *
- * Board: "ESP32 Dev Module" in Arduino IDE
+ * Board: "XIAO_ESP32C3" in Arduino IDE
+ *   - Add Seeed board URL: https://raw.githubusercontent.com/nicekwell/SeeedArduino/main/package_seeeduino_boards_index.json
+ *   - Or search "esp32" in Board Manager and install Espressif's ESP32 package
+ *   - Select "XIAO_ESP32C3" as board
  * Upload speed: 921600
  */
 
@@ -19,12 +22,21 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-// ─── Pin Definitions ───────────────────────────────────────────
-#define MOTOR_AIN1  25   // DRV8833 AIN1 (PWM)
-#define MOTOR_AIN2  26   // DRV8833 AIN2 (PWM)
-#define SERVO_PIN   13   // SG90 signal
-#define RFID_SS     5    // RC522 SDA/CS
-#define RFID_RST    4    // RC522 RST
+// ─── Pin Definitions (XIAO ESP32C3) ───────────────────────────
+// XIAO ESP32C3 GPIO map:
+//   D0=GPIO2, D1=GPIO3, D2=GPIO4, D3=GPIO5
+//   D4=GPIO6(SCK), D5=GPIO7(MISO), D6=GPIO21(MOSI)
+//   D7=GPIO20(RX), D8=GPIO8(SCL), D9=GPIO9(SDA), D10=GPIO10(SS)
+//
+// SPI pins (hardware SPI): SCK=D4/GPIO6, MISO=D5/GPIO7, MOSI=D6/GPIO21
+// Remaining free: D0(GPIO2), D1(GPIO3), D2(GPIO4), D3(GPIO5), D10(GPIO10)
+//
+#define MOTOR_AIN1  D0   // GPIO2  — DRV8833 AIN1 (PWM)
+#define MOTOR_AIN2  D1   // GPIO3  — DRV8833 AIN2 (PWM)
+#define SERVO_PIN   D2   // GPIO4  — SG90 signal
+#define RFID_SS     D3   // GPIO5  — RC522 SDA/CS
+#define RFID_RST    D10  // GPIO10 — RC522 RST
+// D4(SCK), D5(MISO), D6(MOSI) used by hardware SPI for RC522
 
 // ─── Motor PWM Config ──────────────────────────────────────────
 #define PWM_FREQ       1000

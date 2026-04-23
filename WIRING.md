@@ -37,20 +37,36 @@
 
 **Key insight:** The 1S LiPo (3.0V–4.2V) powers everything. The N20 motor and SG90 servo run at battery voltage directly. The ESP32 and RFID module need regulated 3.3V (a fully charged LiPo hits 4.2V which would fry the ESP32's 3.3V logic).
 
-## Pin Assignments (ESP32 DevKit 30-pin)
+## Pin Assignments (XIAO ESP32C3)
 
-| ESP32 Pin | Connects To        | Function           |
-|-----------|--------------------|--------------------|
-| GPIO 25   | DRV8833 AIN1       | Motor PWM forward  |
-| GPIO 26   | DRV8833 AIN2       | Motor PWM reverse  |
-| GPIO 13   | SG90 signal (orange)| Servo PWM         |
-| GPIO 18   | RC522 SCK          | SPI clock          |
-| GPIO 23   | RC522 MOSI         | SPI data out       |
-| GPIO 19   | RC522 MISO         | SPI data in        |
-| GPIO 5    | RC522 SDA          | SPI chip select    |
-| GPIO 4    | RC522 RST          | RFID reset         |
-| 3V3 pin   | LDO 3.3V output    | Regulated power in |
-| GND       | Common ground      | Ground             |
+```
+XIAO ESP32C3 Pinout (top view, USB-C at top):
+
+        ┌──[USB-C]──┐
+   D0   │ ●       ● │  5V
+   D1   │ ●       ● │  GND
+   D2   │ ●       ● │  3V3
+   D3   │ ●       ● │  D10
+   D4   │ ●       ● │  D9
+   D5   │ ●       ● │  D8
+   D6   │ ●       ● │  D7
+        └───────────┘
+```
+
+| XIAO Pin | GPIO | Connects To         | Function           |
+|----------|------|---------------------|--------------------|
+| D0       | 2    | DRV8833 AIN1        | Motor PWM forward  |
+| D1       | 3    | DRV8833 AIN2        | Motor PWM reverse  |
+| D2       | 4    | SG90 signal (orange)| Servo PWM          |
+| D3       | 5    | RC522 SDA           | SPI chip select    |
+| D4       | 6    | RC522 SCK           | SPI clock          |
+| D5       | 7    | RC522 MISO          | SPI data in        |
+| D6       | 21   | RC522 MOSI          | SPI data out       |
+| D10      | 10   | RC522 RST           | RFID reset         |
+| 3V3      | —    | LDO 3.3V output     | Regulated power in |
+| GND      | —    | Common ground        | Ground             |
+
+**8 of 11 GPIOs used. D7/D8/D9 are free** (could add an LED or buzzer later).
 
 ## Full Wiring Connections
 
@@ -79,8 +95,8 @@ Capacitors (REQUIRED for stability):
 ```
 DRV8833 VM    →  Power rail + (battery voltage, 3.7V)
 DRV8833 GND   →  Ground rail
-DRV8833 AIN1  →  ESP32 GPIO 25
-DRV8833 AIN2  →  ESP32 GPIO 26
+DRV8833 AIN1  →  XIAO D0 (GPIO 2)
+DRV8833 AIN2  →  XIAO D1 (GPIO 3)
 DRV8833 AOUT1 →  N20 motor terminal 1
 DRV8833 AOUT2 →  N20 motor terminal 2
 DRV8833 STBY  →  Power rail + (tie HIGH to enable)
@@ -94,7 +110,7 @@ Capacitor (REQUIRED - motor noise):
 ```
 SG90 Red (VCC)    →  Power rail + (battery voltage)
 SG90 Brown (GND)  →  Ground rail
-SG90 Orange (SIG) →  ESP32 GPIO 13
+SG90 Orange (SIG) →  XIAO D2 (GPIO 4)
 ```
 Note: SG90 is rated 4.8–6V but works at 3.7V with slightly reduced torque. Fine for a lightweight rack-and-pinion.
 
@@ -102,11 +118,11 @@ Note: SG90 is rated 4.8–6V but works at 3.7V with slightly reduced torque. Fin
 ```
 RC522 3.3V →  LDO 3.3V output (NOT battery voltage — RC522 is 3.3V only!)
 RC522 GND  →  Ground rail
-RC522 RST  →  ESP32 GPIO 4
-RC522 SDA  →  ESP32 GPIO 5
-RC522 MOSI →  ESP32 GPIO 23
-RC522 MISO →  ESP32 GPIO 19
-RC522 SCK  →  ESP32 GPIO 18
+RC522 RST  →  XIAO D10 (GPIO 10)
+RC522 SDA  →  XIAO D3  (GPIO 5)
+RC522 MOSI →  XIAO D6  (GPIO 21)
+RC522 MISO →  XIAO D5  (GPIO 7)
+RC522 SCK  →  XIAO D4  (GPIO 6)
 RC522 IRQ  →  not connected (unused)
 ```
 
@@ -120,7 +136,7 @@ Solder a 100nF ceramic capacitor directly across the motor terminals to suppress
 ## Component Checklist
 
 ### You Have
-- [x] ESP32 DevKit
+- [x] XIAO ESP32C3 (x3 — Seeed Studio 3-pack)
 - [x] RC522 RFID module + 4 RFID tags
 - [x] N20 motor (double shaft)
 - [x] SG90 servo motor
