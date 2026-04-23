@@ -92,10 +92,10 @@ bool deviceConnected = false;
 // Set these to your actual tag UIDs after scanning them (see Serial output)
 // Tag 0 = lap marker (start/finish line)
 // Tags 1-3 = powerup tags (placed around track)
-byte LAP_TAG_UID[4]     = {0x00, 0x00, 0x00, 0x00};  // FILL IN after first scan
-byte POWERUP_TAG_1[4]   = {0x00, 0x00, 0x00, 0x00};  // FILL IN
-byte POWERUP_TAG_2[4]   = {0x00, 0x00, 0x00, 0x00};  // FILL IN
-byte POWERUP_TAG_3[4]   = {0x00, 0x00, 0x00, 0x00};  // FILL IN
+byte LAP_TAG_UID[4]     = {0xD2, 0xA3, 0x9C, 0x1B};  // White card — lap marker
+byte POWERUP_TAG_1[4]   = {0x56, 0xB3, 0x6D, 0xAF};  // Blue fob — powerup
+byte POWERUP_TAG_2[4]   = {0x00, 0x00, 0x00, 0x00};  // TBD — need 2 more tags
+byte POWERUP_TAG_3[4]   = {0x00, 0x00, 0x00, 0x00};  // TBD — need 2 more tags
 
 // ─── BLE Callbacks ─────────────────────────────────────────────
 class ServerCallbacks : public BLEServerCallbacks {

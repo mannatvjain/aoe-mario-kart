@@ -2,6 +2,13 @@
 
 ESP32-based RC car for a timed-trial Mario Kart game with RFID powerups, PID motor control, servo steering, and laptop communication.
 
+## Puppet Mode
+
+When puppeting the user through hardware assembly or setup:
+- Log every instruction and the user's response/compliance in `Puppet.md`
+- Track how closely the user follows instructions (did they do exactly what was asked, skip ahead, deviate, etc.)
+- Format: numbered steps with status (pending/done/skipped/deviated) and notes
+
 ## Stack
 - **Language**:
 - **Key dependencies**:
