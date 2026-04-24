@@ -25,24 +25,23 @@
 // ─── Pin Definitions (XIAO ESP32C3) ───────────────────────────
 // XIAO ESP32C3 GPIO map:
 //   D0=GPIO2, D1=GPIO3, D2=GPIO4, D3=GPIO5
-//   D4=GPIO6(SCK), D5=GPIO7(MISO), D6=GPIO21(MOSI)
-//   D7=GPIO20(RX), D8=GPIO8(SCL), D9=GPIO9(SDA), D10=GPIO10(SS)
+//   D4=GPIO6,  D5=GPIO7,  D6=GPIO21, D7=GPIO20
+//   D8=GPIO8(SCK), D9=GPIO9(MISO), D10=GPIO10(MOSI)
 //
-// SPI pins (hardware SPI): SCK=D4/GPIO6, MISO=D5/GPIO7, MOSI=D6/GPIO21
-// Remaining free: D0(GPIO2), D1(GPIO3), D2(GPIO4), D3(GPIO5), D10(GPIO10)
+// SPI pins: use DEFAULT hardware SPI only — ESP32 Arduino v3.3.8
+// ignores custom pin remapping in SPI.begin(). Call SPI.begin() with
+// no args. RC522 must be wired to D8(SCK), D9(MISO), D10(MOSI).
 //
 #define MOTOR_AIN1  D0   // GPIO2  — DRV8833 AIN1 (PWM)
 #define MOTOR_AIN2  D1   // GPIO3  — DRV8833 AIN2 (PWM)
 #define SERVO_PIN   D2   // GPIO4  — SG90 signal
 #define RFID_SS     D3   // GPIO5  — RC522 SDA/CS
-#define RFID_RST    D10  // GPIO10 — RC522 RST
-// D4(SCK), D5(MISO), D6(MOSI) used by hardware SPI for RC522
+#define RFID_RST    D7   // GPIO20 — RC522 RST
+// D8(SCK), D9(MISO), D10(MOSI) used by hardware SPI for RC522
 
 // ─── Motor PWM Config ──────────────────────────────────────────
 #define PWM_FREQ       1000
 #define PWM_RESOLUTION 8     // 0–255
-#define PWM_CHAN_A     0
-#define PWM_CHAN_B     1
 
 // ─── Game Config ───────────────────────────────────────────────
 #define TOTAL_LAPS        3
@@ -93,9 +92,17 @@ bool deviceConnected = false;
 // Tag 0 = lap marker (start/finish line)
 // Tags 1-3 = powerup tags (placed around track)
 byte LAP_TAG_UID[4]     = {0xD2, 0xA3, 0x9C, 0x1B};  // White card — lap marker
-byte POWERUP_TAG_1[4]   = {0x56, 0xB3, 0x6D, 0xAF};  // Blue fob — powerup
+byte POWERUP_TAG_1[4]   = {0x26, 0x76, 0xBB, 0x03};  // Blue fob — powerup
 byte POWERUP_TAG_2[4]   = {0x00, 0x00, 0x00, 0x00};  // TBD — need 2 more tags
 byte POWERUP_TAG_3[4]   = {0x00, 0x00, 0x00, 0x00};  // TBD — need 2 more tags
+
+// ─── Forward Declarations ──────────────────────────────────────
+void handleCommand(String cmd);
+void notify(String msg);
+void startRace();
+void completeLap();
+void finishRace();
+void triggerPowerup();
 
 // ─── BLE Callbacks ─────────────────────────────────────────────
 class ServerCallbacks : public BLEServerCallbacks {
@@ -120,18 +127,18 @@ class ControlCallbacks : public BLECharacteristicCallbacks {
 
 // ─── Motor Control ─────────────────────────────────────────────
 void motorForward(int speed) {
-  ledcWrite(PWM_CHAN_A, speed);
-  ledcWrite(PWM_CHAN_B, 0);
+  ledcWrite(MOTOR_AIN1, speed);
+  ledcWrite(MOTOR_AIN2, 0);
 }
 
 void motorReverse(int speed) {
-  ledcWrite(PWM_CHAN_A, 0);
-  ledcWrite(PWM_CHAN_B, speed);
+  ledcWrite(MOTOR_AIN1, 0);
+  ledcWrite(MOTOR_AIN2, speed);
 }
 
 void motorStop() {
-  ledcWrite(PWM_CHAN_A, 0);
-  ledcWrite(PWM_CHAN_B, 0);
+  ledcWrite(MOTOR_AIN1, 0);
+  ledcWrite(MOTOR_AIN2, 0);
 }
 
 // ─── Command Handler ──────────────────────────────────────────
@@ -326,11 +333,9 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Mario Kart Timed Trial — Booting...");
 
-  // Motor PWM setup
-  ledcSetup(PWM_CHAN_A, PWM_FREQ, PWM_RESOLUTION);
-  ledcSetup(PWM_CHAN_B, PWM_FREQ, PWM_RESOLUTION);
-  ledcAttachPin(MOTOR_AIN1, PWM_CHAN_A);
-  ledcAttachPin(MOTOR_AIN2, PWM_CHAN_B);
+  // Motor PWM setup (ESP32 Arduino v3.x pin-based API)
+  ledcAttach(MOTOR_AIN1, PWM_FREQ, PWM_RESOLUTION);
+  ledcAttach(MOTOR_AIN2, PWM_FREQ, PWM_RESOLUTION);
   motorStop();
 
   // Servo setup
@@ -340,6 +345,8 @@ void setup() {
   // RFID setup
   SPI.begin();
   rfid.PCD_Init();
+  rfid.PCD_AntennaOn();
+  rfid.PCD_SetAntennaGain(rfid.RxGain_max); // clone chips (0xFF) need max gain
   Serial.println("RFID reader initialized");
 
   // Seed random from analog noise
