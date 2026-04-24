@@ -1,48 +1,38 @@
 /*
  * RFID Tag Scanner — Test Sketch
  * Scans tags and prints their UIDs to Serial Monitor.
- * Use this to identify your tags before loading the game code.
  *
  * Board: XIAO_ESP32C3
+ * SPI pins: default (SCK=D8, MISO=D9, MOSI=D10)
  */
 
 #include <SPI.h>
 #include <MFRC522.h>
 
-#define RFID_SS   D3   // GPIO5 — RC522 SDA/CS
-#define RFID_RST  D10  // GPIO10 — RC522 RST
+#define RFID_SS   D3   // RC522 SDA/CS
+#define RFID_RST  D7   // RC522 RST (moved from D10)
 
 MFRC522 rfid(RFID_SS, RFID_RST);
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
-  Serial.println();
+  delay(5000);
   Serial.println("=== RFID Tag Scanner ===");
-  Serial.println("Wave a tag over the RC522...");
-  Serial.println();
 
-  // Explicitly set SPI pins — XIAO ESP32C3 defaults don't match our wiring
-  SPI.begin(D4, D5, D6, D3);  // SCK=D4(GPIO6), MISO=D5(GPIO7), MOSI=D6(GPIO21), SS=D3(GPIO5)
+  SPI.begin(); // use default pins: SCK=D8, MISO=D9, MOSI=D10
   rfid.PCD_Init();
+  rfid.PCD_AntennaOn();
+  rfid.PCD_SetAntennaGain(rfid.RxGain_max); // max gain for clone chips
 
-  // Check if RC522 is responding
   byte version = rfid.PCD_ReadRegister(MFRC522::VersionReg);
-  if (version == 0x00 || version == 0xFF) {
-    Serial.println("ERROR: Cannot communicate with RC522!");
-    Serial.println("Check your wiring:");
-    Serial.println("  RC522 SCK  -> XIAO D4");
-    Serial.println("  RC522 MOSI -> XIAO D6");
-    Serial.println("  RC522 MISO -> XIAO D5");
-    Serial.println("  RC522 SDA  -> XIAO D3");
-    Serial.println("  RC522 RST  -> XIAO D10");
-    Serial.println("  RC522 3.3V -> XIAO 3V3");
-    Serial.println("  RC522 GND  -> XIAO GND");
+  Serial.print("RC522 version: 0x");
+  Serial.println(version, HEX);
+
+  if (version == 0x00) {
+    Serial.println("ERROR: No response from RC522. Check wiring.");
     while (1) delay(1000);
   }
 
-  Serial.print("RC522 firmware version: 0x");
-  Serial.println(version, HEX);
   Serial.println("RC522 is working! Scan a tag...");
   Serial.println();
 }
@@ -59,17 +49,6 @@ void loop() {
     Serial.print(rfid.uid.uidByte[i], HEX);
     if (i < rfid.uid.size - 1) Serial.print(":");
   }
-  Serial.println();
-
-  // Print as C array for easy copy-paste into game code
-  Serial.print("  -> byte TAG_UID[4] = {");
-  for (int i = 0; i < rfid.uid.size; i++) {
-    Serial.print("0x");
-    if (rfid.uid.uidByte[i] < 0x10) Serial.print("0");
-    Serial.print(rfid.uid.uidByte[i], HEX);
-    if (i < rfid.uid.size - 1) Serial.print(", ");
-  }
-  Serial.println("};");
   Serial.println();
 
   rfid.PICC_HaltA();

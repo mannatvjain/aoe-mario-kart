@@ -56,6 +56,20 @@
 
 ---
 
+## Session: 2026-04-23 — Motor Driver Test (Andrew + Spencer)
+
+### Phase 5: DRV8833 Motor Driver Wiring & Test
+
+| # | Instruction | Status | Compliance | Notes |
+|---|-------------|--------|------------|-------|
+| 25 | Solder header pins onto XIAO ESP32C3 and DRV8833. Solder 100nF cap across N20 motor terminals. | DONE | MATCH | Andrew soldered XIAO headers (14 pins), DRV8833 headers, and motor noise cap. Decided to solder rather than use poke method — good call. |
+| 26 | Seat XIAO on breadboard, connect DRV8833 via female-to-male wires. | DONE | DEVIATED — kept DRV8833 off breadboard, used F-M wires with female end on DRV8833 pins, male end into breadboard rows | Spencer handled wiring. XIAO seated on breadboard, DRV8833 held off-board. J1 jumper confirmed bridged (SLEEP tied HIGH). |
+| 27 | Connect N20 motor to DRV8833 OUT1/OUT2 via alligator clips. | DONE | MATCH | Spencer handled. Motor has no wire leads — used alligator clips directly on terminals. |
+| 28 | Install Arduino IDE 2, add ESP32 board support, flash motor_test.ino. | DONE | MATCH | Spencer handled. arduino-cli not installed — used Arduino IDE 2 instead. esp32 by Espressif v3.3.8 installed. Board: XIAO_ESP32C3, Port: COM3. |
+| 29 | Verify motor spins forward/reverse. | DONE | MATCH | Motor spinning forward 2s, stop, reverse 2s, stop as expected. DRV8833 wiring confirmed working. |
+
+---
+
 ## Photos
 
 | # | File | Description |

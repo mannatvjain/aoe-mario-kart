@@ -59,14 +59,16 @@ XIAO ESP32C3 Pinout (top view, USB-C at top):
 | D1       | 3    | DRV8833 AIN2        | Motor PWM reverse  |
 | D2       | 4    | SG90 signal (orange)| Servo PWM          |
 | D3       | 5    | RC522 SDA           | SPI chip select    |
-| D4       | 6    | RC522 SCK           | SPI clock          |
-| D5       | 7    | RC522 MISO          | SPI data in        |
-| D6       | 21   | RC522 MOSI          | SPI data out       |
-| D10      | 10   | RC522 RST           | RFID reset         |
+| D7       | 20   | RC522 RST           | RFID reset         |
+| D8       | 8    | RC522 SCK           | SPI clock (default)|
+| D9       | 9    | RC522 MISO          | SPI data in (default)|
+| D10      | 10   | RC522 MOSI          | SPI data out (default)|
 | 3V3      | —    | LDO 3.3V output     | Regulated power in |
 | GND      | —    | Common ground        | Ground             |
 
-**8 of 11 GPIOs used. D7/D8/D9 are free** (could add an LED or buzzer later).
+**NOTE:** ESP32 Arduino v3.3.8 ignores custom pin remapping in SPI.begin(). Must use default SPI pins D8/D9/D10.
+
+**9 of 11 GPIOs used. D4/D5/D6 are free** (could add an LED or buzzer later).
 
 ## Full Wiring Connections
 
@@ -118,13 +120,14 @@ Note: SG90 is rated 4.8–6V but works at 3.7V with slightly reduced torque. Fin
 ```
 RC522 3.3V →  LDO 3.3V output (NOT battery voltage — RC522 is 3.3V only!)
 RC522 GND  →  Ground rail
-RC522 RST  →  XIAO D10 (GPIO 10)
+RC522 RST  →  XIAO D7  (GPIO 20)
 RC522 SDA  →  XIAO D3  (GPIO 5)
-RC522 MOSI →  XIAO D6  (GPIO 21)
-RC522 MISO →  XIAO D5  (GPIO 7)
-RC522 SCK  →  XIAO D4  (GPIO 6)
+RC522 MOSI →  XIAO D10 (GPIO 10)  ← default MOSI
+RC522 MISO →  XIAO D9  (GPIO 9)   ← default MISO
+RC522 SCK  →  XIAO D8  (GPIO 8)   ← default SCK
 RC522 IRQ  →  not connected (unused)
 ```
+IMPORTANT: Use default hardware SPI pins (D8/D9/D10). ESP32 Arduino v3.3.8 ignores SPI.begin() with custom pins on XIAO_ESP32C3 — it silently falls back to defaults, causing 0x00 reads. Always call SPI.begin() with no arguments.
 
 ### 6. N20 Motor
 ```

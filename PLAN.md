@@ -2,11 +2,11 @@
 
 ## Phase 1: Hardware Setup
 - [x] Wire RC522 RFID module to XIAO ESP32C3
-- [x] Scan and record RFID tag UIDs (white=D2:A3:9C:1B, blue=56:B3:6D:AF)
+- [x] Scan and record RFID tag UIDs (white=D2:A3:9C:1B, blue=26:76:BB:03)
 - [x] Verify RC522 firmware (0x92)
-- [ ] Solder headers onto XIAO ESP32C3
-- [ ] Buy remaining components (LiPo, DRV8833, AMS1117 LDO, TP4056, caps)
-- [ ] Wire DRV8833 motor driver + N20 motor
+- [x] Solder headers onto XIAO ESP32C3
+- [ ] Buy remaining components (LiPo, AMS1117 LDO, TP4056, caps)
+- [x] Wire DRV8833 motor driver + N20 motor
 - [ ] Wire SG90 servo for rack-and-pinion steering
 - [ ] Wire TP4056 charging circuit + AMS1117 LDO power rail
 - [ ] Wire MAX7219 LED matrix (blocked on soldering)
@@ -14,7 +14,7 @@
 - [ ] If pins exhausted: wire second ESP32, establish inter-ESP comms
 
 ## Phase 2: Firmware — Motor & Steering
-- [ ] PWM motor control via DRV8833 (forward/reverse)
+- [x] PWM motor control via DRV8833 (forward/reverse) — motor_test.ino verified
 - [ ] PID speed control for consistent motor behavior
 - [ ] Servo steering with configurable rotation limits (tune for rack-and-pinion)
 - [ ] Game controller input: 2 joysticks (left/right steering + forward/back throttle)
